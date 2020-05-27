@@ -21,6 +21,8 @@
 """
 from __future__ import absolute_import
 
+import os
+
 from bigmler.tests.world import (world, common_setup_module,
                                  common_teardown_module,
                                  teardown_class)
@@ -29,6 +31,18 @@ from bigmler.tests.world import (world, common_setup_module,
 import bigmler.tests.external_connector_steps as external_connection
 import bigmler.tests.basic_tst_prediction_steps as prediction_create
 
+HOST = os.getenv("BIGML_EXTERNAL_CONN_HOST")
+PORT = os.getenv("BIGML_EXTERNAL_CONN_PORT")
+DATABASE = os.getenv("BIGML_EXTERNAL_CONN_DB")
+USER = os.getenv("BIGML_EXTERNAL_CONN_USER")
+PASSWORD = os.getenv("BIGML_EXTERNAL_CONN_PWD")
+
+if HOST is None or PORT is None or DATABASE is None or USER is None or \
+        PASSWORD is None:
+    raise ValueError("The external connections tests needs defining some"
+                     " environment variables: BIGML_EXTERNAL_CONN_HOST,"
+                     " BIGML_EXTERNAL_CONN_PORT, BIGML_EXTERNAL_CONN_DB,"
+                     " BIGML_EXTERNAL_CONN_USER, BIGML_EXTERNAL_CONN_PWD")
 
 def setup_module():
     """Setup for the module
@@ -74,8 +88,8 @@ class TestExternalConnector(object):
         """
         print self.test_scenario01.__doc__
         examples = [
-            ['my connection', 'postgresql', 'hh-pgsql-public.ebi.ac.uk',
-            '5432', 'reader', 'NWDMCE5xdipIjRrp', 'pfmegrnargs', 'scenario_41',
+            ['my connection', 'postgresql', HOST,
+            PORT, USER, PASSWORD, DATABASE, 'scenario_41',
             'my new connection', 'scenario_41/my_connector.json',
             'select * from rnacen.auth_group']]
         for example in examples:
